@@ -1,0 +1,138 @@
+/* Luwei Mail · identidade Luwei Flow OS.
+   Fonte canônica: luwei-flow/src/styles/flowos-tokens.css (--flow-*) e docs/design-system/.
+   As telas do Mailflare usam a paleta do Tailwind direto (bg-white, text-neutral-900, bg-blue-600…).
+   Em vez de reescrever cada componente, este arquivo remapeia as variáveis da paleta para os tokens
+   do Flow OS, nos dois temas (claro em :root, escuro em .dark), seguindo o mesmo mecanismo que
+   globals.css já usava para o tema escuro. Os seletores usam `html` para vencer globals.css
+   independentemente da ordem de carregamento das folhas. */
+
+html:root {
+	/* ── Tokens canônicos Flow OS (tema claro) ── */
+	--flow-bg: #f6f4f8; --flow-bg-2: #efecf3; --flow-surface: #ffffff; --flow-surface-2: #f4f1f7; --flow-surface-3: #ebe6f0;
+	--flow-line: #e3dde9; --flow-line-2: #d4ccdc;
+	--flow-fg: #16121b; --flow-fg-2: #3d3546; --flow-muted: #6a6274; --flow-faint: #9a92a4;
+	--flow-violet: #9b5cff; --flow-magenta: #ff2e7e; --flow-ember: #ff6a3d;
+	--flow-brand-grad: linear-gradient(100deg, #8b3dff 0%, #ff2e7e 55%, #ff6a3d 100%);
+	--flow-accent: #d6125f; --flow-accent-soft: rgba(214, 18, 95, .08); --flow-accent-ink: #c0104f;
+	--flow-violet-soft: rgba(123, 58, 240, .09);
+	--flow-danger: #d23434; --flow-warn: #b26a00; --flow-ok: #14864b; --flow-info: #1769c2;
+	--flow-shadow: 0 1px 2px rgba(30, 20, 40, .05), 0 10px 28px -14px rgba(40, 20, 60, .18);
+	--flow-r-sm: 8px; --flow-r-md: 12px; --flow-r-lg: 16px; --flow-r-xl: 22px; --flow-r-pill: 999px;
+
+	/* ── Variáveis semânticas do app ── */
+	--background: var(--flow-bg);
+	--foreground: var(--flow-fg);
+	--card: var(--flow-surface);
+	--muted: var(--flow-surface-2);
+	--border: var(--flow-line);
+	--primary: var(--flow-accent);
+	--primary-foreground: #ffffff;
+	--color-white: #ffffff;
+
+	/* Neutros: cinzas violáceos do Flow OS */
+	--lw-n-50: #f8f6fa; --lw-n-100: #f4f1f7; --lw-n-200: #e3dde9; --lw-n-300: #d4ccdc; --lw-n-400: #9a92a4;
+	--lw-n-500: #6a6274; --lw-n-600: #554c5f; --lw-n-700: #3d3546; --lw-n-800: #2a2331; --lw-n-900: #16121b; --lw-n-950: #0c0a0f;
+
+	/* Acento (o "azul" do app vira o magenta da marca) */
+	--color-blue-50: #fdf1f6; --color-blue-100: #fbe1ec; --color-blue-200: #f6c0d6; --color-blue-300: #ef8fb5;
+	--color-blue-400: #e4558c; --color-blue-500: #e8246f; --color-blue-600: #d6125f; --color-blue-700: #b40f50;
+	--color-blue-800: #8f0c40; --color-blue-900: #6b0a31; --color-blue-950: #42061e;
+}
+
+html.dark {
+	--flow-bg: #0c0a0f; --flow-bg-2: #121016; --flow-surface: #17141c; --flow-surface-2: #1f1b25; --flow-surface-3: #27222e;
+	--flow-line: #2c2733; --flow-line-2: #3a3442;
+	--flow-fg: #f3eff6; --flow-fg-2: #c9c2d0; --flow-muted: #958d9f; --flow-faint: #6c6576;
+	--flow-accent: #ff2e7e; --flow-accent-soft: rgba(255, 46, 126, .12); --flow-accent-ink: #ff6aa5;
+	--flow-violet-soft: rgba(155, 92, 255, .14);
+	--flow-danger: #ff5d5d; --flow-warn: #f7b13a; --flow-ok: #34d27f; --flow-info: #55b8ff;
+	--flow-shadow: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 12px 32px -12px rgba(0, 0, 0, .6);
+
+	--background: var(--flow-bg);
+	--foreground: var(--flow-fg);
+	--card: var(--flow-surface);
+	--muted: var(--flow-surface-2);
+	--border: var(--flow-line);
+	--primary: var(--flow-accent);
+	--primary-foreground: #ffffff;
+	--color-white: var(--flow-surface);
+
+	--lw-n-50: #1f1b25; --lw-n-100: #241f2a; --lw-n-200: #2c2733; --lw-n-300: #3a3442; --lw-n-400: #6c6576;
+	--lw-n-500: #958d9f; --lw-n-600: #b3abbd; --lw-n-700: #c9c2d0; --lw-n-800: #e2dce8; --lw-n-900: #f3eff6; --lw-n-950: #ffffff;
+
+	--color-blue-50: #2a1220; --color-blue-100: #3a1529; --color-blue-200: #561a39; --color-blue-300: #7a1f4c;
+	--color-blue-400: #b0255f; --color-blue-500: #e0306f; --color-blue-600: #ff6aa5; --color-blue-700: #ff8fbb;
+	--color-blue-800: #ffb8d3; --color-blue-900: #ffdbe8; --color-blue-950: #fff0f6;
+}
+
+/* Todas as escalas neutras do Tailwind apontam para a mesma régua do Flow OS. */
+html:root, html.dark {
+	--color-neutral-50: var(--lw-n-50); --color-neutral-100: var(--lw-n-100); --color-neutral-200: var(--lw-n-200);
+	--color-neutral-300: var(--lw-n-300); --color-neutral-400: var(--lw-n-400); --color-neutral-500: var(--lw-n-500);
+	--color-neutral-600: var(--lw-n-600); --color-neutral-700: var(--lw-n-700); --color-neutral-800: var(--lw-n-800);
+	--color-neutral-900: var(--lw-n-900); --color-neutral-950: var(--lw-n-950);
+	--color-gray-50: var(--lw-n-50); --color-gray-100: var(--lw-n-100); --color-gray-200: var(--lw-n-200);
+	--color-gray-300: var(--lw-n-300); --color-gray-400: var(--lw-n-400); --color-gray-500: var(--lw-n-500);
+	--color-gray-600: var(--lw-n-600); --color-gray-700: var(--lw-n-700); --color-gray-800: var(--lw-n-800);
+	--color-gray-900: var(--lw-n-900); --color-gray-950: var(--lw-n-950);
+	--color-zinc-50: var(--lw-n-50); --color-zinc-100: var(--lw-n-100); --color-zinc-200: var(--lw-n-200);
+	--color-zinc-300: var(--lw-n-300); --color-zinc-400: var(--lw-n-400); --color-zinc-500: var(--lw-n-500);
+	--color-zinc-600: var(--lw-n-600); --color-zinc-700: var(--lw-n-700); --color-zinc-800: var(--lw-n-800);
+	--color-zinc-900: var(--lw-n-900); --color-zinc-950: var(--lw-n-950);
+	--color-slate-50: var(--lw-n-50); --color-slate-100: var(--lw-n-100); --color-slate-200: var(--lw-n-200);
+	--color-slate-300: var(--lw-n-300); --color-slate-400: var(--lw-n-400); --color-slate-500: var(--lw-n-500);
+	--color-slate-600: var(--lw-n-600); --color-slate-700: var(--lw-n-700); --color-slate-800: var(--lw-n-800);
+	--color-slate-900: var(--lw-n-900); --color-slate-950: var(--lw-n-950);
+	--color-stone-50: var(--lw-n-50); --color-stone-100: var(--lw-n-100); --color-stone-200: var(--lw-n-200);
+	--color-stone-300: var(--lw-n-300); --color-stone-400: var(--lw-n-400); --color-stone-500: var(--lw-n-500);
+	--color-stone-600: var(--lw-n-600); --color-stone-700: var(--lw-n-700); --color-stone-800: var(--lw-n-800);
+	--color-stone-900: var(--lw-n-900); --color-stone-950: var(--lw-n-950);
+}
+
+/* ── Tipografia: Geist na interface, Bricolage Grotesque nos títulos ── */
+/* As fontes do next/font são declaradas no <body>; os tokens precisam nascer nele para resolver. */
+html:root body {
+	--flow-f-display: var(--font-bricolage), "Bricolage Grotesque", var(--font-geist-sans), system-ui, sans-serif;
+	--flow-f-ui: var(--font-geist-sans), "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--flow-f-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+	font-family: var(--flow-f-ui);
+	background: var(--background);
+	color: var(--foreground);
+}
+html:root body :is(h1, h2) { font-family: var(--flow-f-display); letter-spacing: -0.01em; }
+
+/* ── Superfícies fixas herdadas do layout original (Gmail-like) ── */
+html:root .bg-\[\#f6f8fc\], html:root .bg-\[\#f7f9fc\], html:root .bg-\[\#f0f4f8\] { background-color: var(--flow-bg); }
+html:root .bg-\[\#f2f6fc\], html:root .bg-\[\#f1f4fa\], html:root .bg-\[\#f0f3f9\] { background-color: var(--flow-surface-2); }
+html:root .bg-\[\#eef3fb\], html:root .bg-\[\#eaf1fb\], html:root .bg-\[\#e6ecf6\] {
+	background-color: color-mix(in srgb, var(--flow-violet) 10%, var(--flow-surface));
+}
+html:root .hover\:bg-\[\#f2f6fc\]:hover { background-color: var(--flow-surface-2); }
+html:root .hover\:bg-\[\#e6ecf6\]:hover { background-color: var(--flow-surface-3); }
+
+/* ── Ação primária: degradê da marca (padrão flow-btn-primary) ── */
+html:root .bg-blue-600 {
+	background-color: var(--flow-accent);
+	background-image: var(--flow-brand-grad);
+	color: #fff;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, .18) inset, 0 10px 24px -14px color-mix(in srgb, var(--flow-magenta) 80%, transparent);
+}
+html:root .bg-blue-600:is(:hover, :focus-visible), html .hover\:bg-blue-700:hover { filter: brightness(1.06) saturate(1.05); }
+html:root .bg-blue-600:disabled { filter: saturate(.4); opacity: .6; }
+html.dark .bg-blue-700, html.dark .hover\:bg-blue-700:hover { background-color: #c41459; }
+
+/* Foco acessível com a cor da marca */
+html :focus-visible { outline-color: color-mix(in srgb, var(--flow-violet) 70%, var(--flow-magenta)); }
+
+/* Links dentro do corpo do e-mail e seleção de texto */
+html .email-body a { color: var(--flow-accent-ink); }
+html ::selection { background: color-mix(in srgb, var(--flow-magenta) 28%, transparent); }
+
+/* Cartões brancos ganham o relevo do Flow OS */
+html:root .bg-white.rounded-xl, html:root .bg-white.rounded-2xl { box-shadow: var(--flow-shadow); }
+
+/* Barra de carregamento de rota com o degradê da marca */
+html .route-loading-bar { background-image: var(--flow-brand-grad); }
+
+/* Rolagem discreta nas cores do tema */
+html * { scrollbar-color: var(--flow-line-2) transparent; }

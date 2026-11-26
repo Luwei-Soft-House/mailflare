@@ -1,0 +1,93 @@
+name: Publicação
+
+# Única via de deploy do Luwei Mail (https://mail.luwei.com.br): Worker "mailflare"
+# na conta Cloudflare da Luwei. Roda a cada push em main ou manualmente.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publicacao-producao
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    name: Validar e publicar
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: 33f952c97154d6497a9ec998c490d3d6
+      APP_URL: https://mail.luwei.com.br
+    steps:
+      - name: Conferir credencial de deploy
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+            echo "::error title=CLOUDFLARE_API_TOKEN ausente::Cadastre o secret CLOUDFLARE_API_TOKEN (organização ou repositório Luwei-Soft-House/mailflare)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      # Lint, type check e testes leem o bundle de migrations gerado.
+      - run: npm run db:bundle
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: node --test tests/*.test.mjs
+
+      - name: Garantir filas do Worker
+        run: |
+          set -euo pipefail
+          for queue in mailflare-inbound mailflare-outbound mailflare-agent; do
+            if npx wrangler queues info "$queue" >/dev/null 2>&1; then
+              echo "fila $queue já existe"
+            else
+              npx wrangler queues create "$queue"
+            fi
+          done
+
+      - name: Build e deploy (vinext + wrangler)
+        run: npm run deploy
+
+      - name: Secrets de runtime
+        env:
+          # Token dedicado do app (DNS, Email Routing). Sem ele, usa o token de deploy e avisa.
+          MAILFLARE_CF_TOKEN: ${{ secrets.MAILFLARE_CF_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          set -euo pipefail
+          cf_token="${MAILFLARE_CF_TOKEN:-}"
+          if [ -z "$cf_token" ]; then
+            echo "::warning title=MAILFLARE_CF_TOKEN ausente::Usando o token de deploy como CF_TOKEN do app. Crie um token dedicado (DNS, Zone, Email Routing) e cadastre MAILFLARE_CF_TOKEN."
+            cf_token="$CLOUDFLARE_API_TOKEN"
+          fi
+          payload="$(CF="$cf_token" RS="${RESEND_API_KEY:-}" node -e '
+            const out = { CF_TOKEN: process.env.CF };
+            if (process.env.RS) out.RESEND_API_KEY = process.env.RS;
+            process.stdout.write(JSON.stringify(out));
+          ')"
+          printf '%s' "$payload" | npx wrangler secret bulk --name mailflare
+
+      - name: Verificar publicação
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            code="$(curl -s -o /dev/null -w '%{http_code}' "$APP_URL/setup" || true)"
+            echo "tentativa $attempt: HTTP $code"
+            case "$code" in 200|302|303|307|308) exit 0 ;; esac
+            sleep 15
+          done
+          echo "::error::$APP_URL não respondeu como esperado."
+          exit 1

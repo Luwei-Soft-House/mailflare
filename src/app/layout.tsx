@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { LanguageProvider } from "@/components/language-provider";
 import { DEFAULT_LOCALE, getDirection } from "@/lib/i18n/utils";
@@ -8,10 +8,17 @@ import { sidebarBootstrapScript } from "@/components/sidebar-state-utils";
 import { themeBootstrapScript } from "@/components/theme-utils";
 import { getHomeBranding } from "./home-server-utils";
 import "./globals.css";
+import "./luwei-theme.css";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
 	subsets: ["latin"],
+});
+
+const bricolage = Bricolage_Grotesque({
+	variable: "--font-bricolage",
+	subsets: ["latin"],
+	weight: ["500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -23,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 	const { appName } = await getHomeBranding();
 	return {
 		title: appName,
-		description: "Multi-tenant email on Cloudflare",
+		description: "E-mail corporativo da Luwei",
 		icons: { icon: "/api/branding/icon", apple: "/icon-192.png" },
 		appleWebApp: {
 			capable: true,
@@ -58,7 +65,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 				<script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
 				<link rel="icon" href="/api/branding/icon"></link>
 			</head>
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+			<body className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} antialiased`}>
 				<LanguageProvider initialLocale={locale} initialMessages={messages}><Providers initialBranding={branding}>{children}</Providers></LanguageProvider>
 			</body>
 		</html>

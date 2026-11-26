@@ -4,8 +4,11 @@ import { LOCALE_COOKIE, createTranslator, loadMessages, resolveLocale } from "./
 import type { Locale, Messages } from "./types";
 
 /** The locale chosen in the preference cookie, for server code that must render in it. */
+/** Idioma da instalação Luwei Mail quando o usuário ainda não escolheu um. */
+const INSTALLATION_LOCALE = "pt-BR";
+
 export async function getRequestLocale() {
-	return resolveLocale((await cookies()).get(LOCALE_COOKIE)?.value);
+	return resolveLocale((await cookies()).get(LOCALE_COOKIE)?.value ?? INSTALLATION_LOCALE);
 }
 
 /** Server-side catalog load through the static assets binding; English when the catalog cannot be read. */
