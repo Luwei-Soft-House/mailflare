@@ -14,6 +14,8 @@ import { HomeHeroActions } from "./home-hero-actions";
 
 export const dynamic = "force-dynamic";
 
+const LUWEI_CORPORATE_INSTALL = true;
+
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getHomeBranding();
   return {
@@ -31,6 +33,8 @@ export default async function HomePage() {
   ]);
   // Signed-in users skip the landing page; the inbox restores their last-used mailbox.
   if (sessionUser && !sessionUser.disabled) redirect("/inbox");
+  // Luwei Mail é corporativo: sem vitrine pública; quem não está logado vai direto para a entrada.
+  if (LUWEI_CORPORATE_INSTALL) redirect("/login");
 
   // Render the signed-in account from the server response so the header does not
   // wait for hydration and an /api/auth/me round trip before showing it.

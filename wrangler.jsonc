@@ -2,7 +2,16 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "mailflare",
 	"main": "./worker.ts",
+	"account_id": "33f952c97154d6497a9ec998c490d3d6",
 	"compatibility_date": "2026-05-20",
+	// Luwei Mail: publicado em mail.luwei.com.br (Custom Domain do Worker na zona luwei.com.br).
+	"routes": [
+		{ "pattern": "mail.luwei.com.br", "custom_domain": true },
+	],
+	"workers_dev": true,
+	"vars": {
+		"APP_URL": "https://mail.luwei.com.br",
+	},
 	"keep_vars": true,
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -75,14 +84,15 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "mailflare",
+			"database_name": "luwei-mail",
+			"database_id": "baeaea86-986d-442d-a751-d2d0125bc329",
 			"migrations_dir": "drizzle/migrations",
 		},
 	],
 	"r2_buckets": [
 		{
 			"binding": "BUCKET",
-			"bucket_name": "mailflare-raw",
+			"bucket_name": "luwei-mail-raw",
 		},
 	],
 	"queues": {

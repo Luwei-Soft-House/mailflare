@@ -68,7 +68,7 @@ async function bundleI18n(outfile, extraLocale = false) {
 				builder.onLoad({ filter: /.*/, namespace: "stub" }, ({ path }) => ({ contents: path === "next/headers"
 					? 'export async function cookies() { return { get(name) { return name === "mailflare-locale" && globalThis.testLocaleCookie !== undefined ? { value: globalThis.testLocaleCookie } : undefined; } }; }'
 					: path === "next/font/google"
-						? 'export const Geist = () => ({ variable: "sans" }); export const Geist_Mono = () => ({ variable: "mono" });'
+						? 'export const Geist = () => ({ variable: "sans" }); export const Geist_Mono = () => ({ variable: "mono" }); export const Bricolage_Grotesque = () => ({ variable: "display" });'
 						: path === "./home-server-utils"
 							? 'export async function getHomeBranding() { return { appName: "Mailflare", hasCustomIcon: false, canCustomizeBranding: false }; }'
 							: path === "@/lib/cloudflare"
@@ -153,11 +153,13 @@ test("root layout passes the same cookie locale to HTML and provider on first re
 	const pt = await i18n.renderLayout("pt-BR");
 	assert.match(pt, /<html lang="pt-BR"/);
 	assert.match(pt, /<span>Entrada<\/span>/);
-	for (const value of [undefined, "bad"]) {
-		const english = await i18n.renderLayout(value);
-		assert.match(english, /<html lang="en"/);
-		assert.match(english, />Inbox<\/span>/);
-	}
+	// Luwei Mail: sem cookie, a instalação abre em português do Brasil.
+	const installation = await i18n.renderLayout(undefined);
+	assert.match(installation, /<html lang="pt-BR"/);
+	assert.match(installation, /<span>Entrada<\/span>/);
+	const english = await i18n.renderLayout("bad");
+	assert.match(english, /<html lang="en"/);
+	assert.match(english, />Inbox<\/span>/);
 });
 
 test("a locale registered once reaches resolution, translation, cookie, selector and SSR", async () => {
